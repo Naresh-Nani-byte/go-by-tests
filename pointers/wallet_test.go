@@ -1,6 +1,8 @@
 package pointers
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestWallet(t *testing.T){
 
@@ -13,6 +15,13 @@ func TestWallet(t *testing.T){
 		}
 	}
 
+	assertError := func (t testing.TB, err error)  {
+		t.Helper()
+		if err == nil{
+			t.Errorf("wanted an error but didn't got")
+		}
+		
+	}
 	t.Run("Deposit the Bitcoin ", func(t *testing.T) {
 		wallet := Wallet{}
 		wallet.Deposit(Bitcoin(20))
@@ -34,5 +43,14 @@ func TestWallet(t *testing.T){
 		wallet := Wallet{balance: Bitcoin(20)}
 		wallet.Withdraw(Bitcoin(10))
 		assertBalance(t, wallet, 10)
+	})
+
+	t.Run("Withdraw more than the capacity", func(t *testing.T) {
+		startingBalance := Bitcoin(20)
+		wallet := Wallet{startingBalance}
+		err := wallet.Withdraw(Bitcoin(100))
+		assertError(t,err)
+		assertBalance(t, wallet, startingBalance)
+
 	})
 }
