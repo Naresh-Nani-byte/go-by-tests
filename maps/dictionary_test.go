@@ -1,7 +1,8 @@
 package maps
 
-import "testing"
-
+import (
+	"testing"
+)
 func TestSearch(t *testing.T){
 	dictionary := map[string]string{
 		"B1618151":"Naresh", 
@@ -17,24 +18,31 @@ func TestSearch(t *testing.T){
 	})
 
 	t.Run("Let's try if the key is in the dictionary or not ", func(t *testing.T) {
-		got := SearchKeyInDictionary(dictionary, "R210112")
-		want := true
-		assertBooleanValue(t, got, want)
+		dictionary := Dictionary{"R210112": "Praveen"}
+		_, err := dictionary.SearchKeyInDictionary("R21011234")
+		if err == nil {
+			t.Fatalf("nee an error but got nothing ")
+		}
+		assetStrings(t, err.Error(), ErrNotFound.Error())
 	})
 
-}
+	t.Run("Add New word to dictionary", func(t *testing.T) {
+		dictionary := Dictionary{}
+		dictionary.AddToDictionary("B161021", "Shiva")
+		want := "Shiva"
+		defination, err := dictionary.SearchKeyInDictionary("B161021")
+		if err != nil {
+			t.Fatalf("Couldn't able to add the value to dictionary")
+		}
+		assetStrings(t, defination, want)
+	})
 
-func assertBooleanValue(t testing.TB, got, want bool){
-	t.Helper()
-	if got != want{
-		t.Errorf("got %v but want %v", got, want)
-	}
 }
 
 func assetStrings(t testing.TB, got, want string){
 	t.Helper()
 
 	if got != want {
-		t.Errorf("got thi %s but want %s", got, want)
+		t.Errorf("got thi %q but want %q", got, want)
 	}
 }
